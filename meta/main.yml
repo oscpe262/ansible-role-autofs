@@ -32,6 +32,8 @@ galaxy_info:
     - nfs
     - rhel
     - redhat
+    - system
+    - networking
 
 dependencies: []
 allow_duplicates: no
