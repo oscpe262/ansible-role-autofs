@@ -1,0 +1,6 @@
+## vars/Debian.yml
+autofs_packages:
+  - autofs
+  - nfs-common
+  - nfs4-acl-tools
+  - cifs-utils

@@ -1,0 +1,37 @@
+galaxy_info:
+  role_name: autofs
+  author: Oscar Petersson
+  description: A role for setting up autofs.
+
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  platforms:
+  - name: Fedora
+    versions:
+      - 29
+      - 30
+      - 31
+  - name: EL
+    versions:
+      - 7
+      - 8
+  - name: Debian
+    versions:
+      - 9
+      - 10
+  - name: Ubuntu
+    versions:
+      - bionic
+      - disco dingo
+      - eoan
+
+  galaxy_tags:
+    - autofs
+    - nfs
+    - rhel
+    - redhat
+
+dependencies: []
+allow_duplicates: no

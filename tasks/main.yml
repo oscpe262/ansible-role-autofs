@@ -1,0 +1,115 @@
+## roles/ansible-role-autofs/tasks/main.yml
+# vim:ft=yaml.ansible:
+---
+- name: Import distro specific vars.
+  include_vars: '{{ item }}'
+  with_first_found:
+    - '{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml'
+    - '{{ ansible_distribution }}.yml'
+    - '{{ ansible_os_family }}.yml'
+    - 'default.yml'
+
+- name: "Install autofs"
+  package:
+    name: '{{ autofs_packages }}'
+    state: present
+
+- name: "Configure /etc/autofs.conf"
+  template:
+    src: etc_autofs_conf.j2
+    dest: '/etc/autofs.conf'
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify:
+    - restart autofs
+
+- name: "Configure autofs_ldap_auth.conf"
+  template:
+    src: etc_autofs_ldap_auth_conf.j2
+    dest: /etc/autofs_ldap_auth_conf.j2
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify:
+    - restart autofs
+
+- name: "Configure /etc/sysconfig/autofs"
+  template:
+    src: etc_sysconfig_autofs.j2
+    dest: '/etc/sysconfig/autofs'
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  when: "'RedHat' in ansible_os_family"
+  notify:
+    - restart autofs
+
+- name: "Empty auto.master"
+  template:
+    src: etc_auto_master.j2
+    dest: '/etc/auto.master'
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify:
+    - restart autofs
+ 
+- name: "Ensure indirect map paths exists"
+  file:
+    path: '{{ item.path }}'
+    state: directory
+  with_items: "{{ autofs_indirect_maps }}"
+
+- name: "Create indirect map file(s) from template"
+  template:
+    src: "indirect_map.j2"
+    dest: "/etc/{{ item.name }}"
+    mode: 0644
+  with_items: "{{ autofs_indirect_maps }}"
+  notify:
+    - restart autofs
+
+- name: "Add indirect map file(s) to autofs master file"
+  lineinfile:
+    dest: /etc/auto.master
+    line: '{{ item.path }}     {{ item.name }} {{ item.options | default ("") }}'
+    insertbefore: '^\+auto.master'
+  with_items: "{{ autofs_indirect_maps }}"
+  when: "(item.path != '/') and (item.path != 'nopath')"
+  notify:
+    - restart autofs
+
+- name: "Add indirect maps to autofs master file"
+  lineinfile:
+    dest: /etc/auto.master
+    line: '{{ item.path }}-    {{ item.name }} {{ item.options | default ("") }}'
+    insertbefore: '^\+auto.master'
+  with_items: "{{ autofs_indirect_maps }}"
+  when: "item.path == '/'"
+  notify:
+    - restart autofs
+
+- name: "Create necessary mountpoints"
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  with_items: "{{ autofs_create_dirs }}"
+  ignore_errors: yes
+
+- name: "Add 'empty' NIS maps"
+  template:
+    src: "nis_map.j2"
+    dest: "/etc/{{ item }}"
+    mode: 0644
+  with_items: "{{ autofs_empty_maps }}"
+  notify:
+    - restart autofs
+...

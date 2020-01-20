@@ -1,0 +1,12 @@
+{{ ansible_managed | comment }}
+
+{% for mount in item.mounts %}
+{% if mount.options is defined %}
+{{ mount.name }} -{{ mount.options }} {{ mount.url }}
+{% elif mount.url == '' %}
+{{ mount.name }}
+{% else %}
+{{ mount.name }}  {{ mount.url }}
+{% endif %}
+{% endfor %}
+

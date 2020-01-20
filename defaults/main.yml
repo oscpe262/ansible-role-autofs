@@ -1,0 +1,14 @@
+## roles/ansible-role-autofs/defaults/main.yml
+# vim:ft=yaml.ansible:
+---
+autofs_packages:
+  - autofs
+  - nfs-utils
+  - nfs4-acl-tools
+  - cifs-utils
+autofs_empty_maps: []
+autofs_indirect_maps: []
+autofs_sysconf_options: ""
+autofs_default_nfs: 4
+autofs_create_dirs: []
+...

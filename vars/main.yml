@@ -1,0 +1,4 @@
+## roles/ansible-role-autofs/vars/main.yml
+# vim:ft=yaml.ansible:
+---
+...

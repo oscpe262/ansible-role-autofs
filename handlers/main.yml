@@ -1,0 +1,9 @@
+## roles/ansible-role-autofs/handlers/main.yml
+# vim:ft=yaml.ansible:
+---
+- name: restart autofs
+  service:
+    name: autofs
+    state: restarted
+    enabled: yes
+...
