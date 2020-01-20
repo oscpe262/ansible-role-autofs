@@ -58,7 +58,7 @@
     backup: yes
   notify:
     - restart autofs
- 
+
 - name: "Ensure indirect map paths exists"
   file:
     path: '{{ item.path }}'

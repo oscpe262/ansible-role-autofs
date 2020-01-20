@@ -19,8 +19,8 @@ galaxy_info:
       - 8
   - name: Debian
     versions:
-      - 9
-      - 10
+      - stretch
+      - buster
   - name: Ubuntu
     versions:
       - bionic
